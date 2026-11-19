@@ -73,6 +73,57 @@ import java.util.Set;
 
 /** tvOS-style home screen: blurred backdrop, top shelf title, rounded app tile grid. */
 public class MainActivity extends Activity {
+    private boolean appleSplashShown = false;
+    private BroadcastReceiver appleScreenReceiver;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && !appleSplashShown) {
+            appleSplashShown = true;
+            showAppleTvSplash();
+            registerAppleScreenReceiver();
+        }
+    }
+
+    private void registerAppleScreenReceiver() {
+        if (appleScreenReceiver != null) return;
+        try {
+            appleScreenReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                        showAppleTvSplash();
+                    }
+                }
+            };
+            registerReceiver(appleScreenReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
+        } catch (Exception ignored) {}
+    }
+
+    private void showAppleTvSplash() {
+        try {
+            ViewGroup root = findViewById(android.R.id.content);
+            if (root == null) return;
+            ImageView splash = new ImageView(this);
+            splash.setBackgroundColor(Color.BLACK);
+            splash.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            splash.setImageResource(R.drawable.apple_tv_splash);
+            splash.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+            ));
+            root.addView(splash);
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                splash.animate()
+                        .alpha(0f)
+                        .setDuration(400)
+                        .withEndAction(() -> root.removeView(splash))
+                        .start();
+            }, 2200);
+        } catch (Exception ignored) {}
+    }
 
     static final int COLS = 6;
     static final String SETTINGS_KEY = "special:settings";
