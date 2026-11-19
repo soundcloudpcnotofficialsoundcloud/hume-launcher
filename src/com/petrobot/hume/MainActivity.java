@@ -1114,7 +1114,7 @@ public class MainActivity extends Activity {
     /** Frosted glass dock (tvOS 26): big radius, dark-tinted translucent fill, sheen and rim. */
     Drawable dockBackground() {
         // Apple's dock corner is ~2x the card corner (36 px vs ~18 px at 1080p).
-        LiquidGlass g = new LiquidGlass(radius * 2f, 0x0FFFFFFF, glassSource, screenW, screenH, unit);
+        LiquidGlass g = new LiquidGlass(radius * 4.5f, 0x0FFFFFFF, glassSource, screenW, screenH, unit);
         g.lens = dp(12);
         g.rimStrength = 0.25f;  // a faint edge, not a bright outline
         return g;
