@@ -121,7 +121,7 @@ public class MainActivity extends Activity {
                         .setDuration(400)
                         .withEndAction(() -> root.removeView(splash))
                         .start();
-            }, 8000);
+            }, 20000);
         } catch (Exception ignored) {}
     }
 
