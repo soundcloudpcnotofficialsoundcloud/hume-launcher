@@ -1417,7 +1417,7 @@ public class MainActivity extends Activity {
     ViewOutlineProvider roundedOutline(float[] r) {
         return new ViewOutlineProvider() {
             @Override public void getOutline(View v, Outline o) {
-                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), r[0]);
+                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), r[0] * 2.3f);
             }
         };
     }
