@@ -1114,10 +1114,28 @@ public class MainActivity extends Activity {
     /** Frosted glass dock (tvOS 26): big radius, dark-tinted translucent fill, sheen and rim. */
     Drawable dockBackground() {
         // Apple's dock corner is ~2x the card corner (36 px vs ~18 px at 1080p).
-        LiquidGlass g = new LiquidGlass(radius * 4.5f, 0x38FFFFFF, glassSource, screenW, screenH, unit);
-        g.lens = dp(24);
-        g.rimStrength = 0.85f;
-        return g;
+                // Многослойный Liquid Glass специально для Android 11
+        float corner = radius * 4.5f;
+
+        // 1. Основное матовое полупрозрачное стекло (вертикальный перелив)
+        GradientDrawable baseGlass = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{0x4DFFFFFF, 0x26FFFFFF, 0x1AFFFFFF}
+        );
+        baseGlass.setCornerRadius(corner);
+        baseGlass.setStroke(dp(1.5f), 0x66FFFFFF); // Яркая стеклянная кромка по контуру
+
+        // 2. Внутренний глянцевый блик сверху (эффект линзы)
+        GradientDrawable topHighlight = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{0x45FFFFFF, 0x00FFFFFF}
+        );
+        topHighlight.setCornerRadius(corner);
+
+        LayerDrawable liquidGlass11 = new LayerDrawable(new Drawable[]{baseGlass, topHighlight});
+        liquidGlass11.setLayerInset(1, dp(1), dp(1), dp(1), dp(12));
+        return liquidGlass11;
+
     }
 
     Bitmap grainBitmap;
