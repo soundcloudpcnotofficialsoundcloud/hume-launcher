@@ -1113,28 +1113,34 @@ public class MainActivity extends Activity {
 
     /** Frosted glass dock (tvOS 26): big radius, dark-tinted translucent fill, sheen and rim. */
     Drawable dockBackground() {
-        // Apple's dock corner is ~2x the card corner (36 px vs ~18 px at 1080p).
-                // Многослойный Liquid Glass специально для Android 11
-        float corner = radius * 4.5f;
+   float corner = radius * 4.5f;
 
-        // 1. Основное матовое полупрозрачное стекло (вертикальный перелив)
+        // 1. Глубокая дымчато-стеклянная основа (видно на любых обоях)
         GradientDrawable baseGlass = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{0x4DFFFFFF, 0x26FFFFFF, 0x1AFFFFFF}
+                new int[]{0x75282C34, 0x55121418, 0x7022262E}
         );
         baseGlass.setCornerRadius(corner);
-        baseGlass.setStroke(dp(1.5f), 0x66FFFFFF); // Яркая стеклянная кромка по контуру
+        baseGlass.setStroke(dp(2f), 0x88FFFFFF); // Чёткая стеклянная кайма
 
-        // 2. Внутренний глянцевый блик сверху (эффект линзы)
-        GradientDrawable topHighlight = new GradientDrawable(
+        // 2. Яркий глянцевый блик сверху (преломление света)
+        GradientDrawable topShine = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{0x45FFFFFF, 0x00FFFFFF}
+                new int[]{0x66FFFFFF, 0x15FFFFFF, 0x00FFFFFF}
         );
-        topHighlight.setCornerRadius(corner);
+        topShine.setCornerRadius(corner);
 
-        LayerDrawable liquidGlass11 = new LayerDrawable(new Drawable[]{baseGlass, topHighlight});
-        liquidGlass11.setLayerInset(1, dp(1), dp(1), dp(1), dp(12));
-        return liquidGlass11;
+        // 3. Нижний отблеск стекла
+        GradientDrawable bottomShine = new GradientDrawable(
+                GradientDrawable.Orientation.BOTTOM_TOP,
+                new int[]{0x44FFFFFF, 0x00FFFFFF}
+        );
+        bottomShine.setCornerRadius(corner);
+
+        LayerDrawable glass = new LayerDrawable(new Drawable[]{baseGlass, topShine, bottomShine});
+        glass.setLayerInset(1, dp(2), dp(2), dp(2), dp(18));
+        glass.setLayerInset(2, dp(6), dp(24), dp(6), dp(2));
+        return glass;
 
     }
 
